@@ -1,0 +1,21 @@
+{
+  "name": "farm-design-system",
+  "private": true,
+  "packageManager": "pnpm@10.23.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "dev:docs": "turbo run dev --filter=docs",
+    "dev:ui": "turbo run dev --filter=@farm-design-system/ui",
+    "storybook": "turbo run dev --filter=playground",
+    "test": "turbo run test",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.7.2"
+  }
+}

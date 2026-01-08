@@ -1,0 +1,55 @@
+{
+  "Button": {
+    "colorPrimary": "button-color-main-button-normal",
+    "colorPrimaryHover": "button-color-main-button-normal",
+    "colorPrimaryActive": "button-color-main-button-press",
+    "colorBgContainer": "button-color-secondary-white-button-normal",
+    "colorBgContainerDisabled": "button-color-gray-button-disable",
+    "primaryColor": "text-color-text-5",
+    "defaultHoverBg": "button-color-secondary-white-button-press",
+    "defaultActiveBg": "button-color-secondary-grey-button-press",
+    "defaultBorderColor": "divider-color-divider-2",
+    "defaultHoverBorderColor": "brand-color-brand-2",
+    "defaultActiveBorderColor": "button-color-main-button-press",
+    "defaultColor": "text-color-text-1",
+    "defaultHoverColor": "brand-color-brand-2",
+    "defaultActiveColor": "button-color-main-button-press",
+    "textHoverBg": "divider-color-divider-4"
+  },
+  "Input": {
+    "addonBg": "bg-color-bg-2",
+    "hoverBorderColor": "brand-color-brand-2",
+    "activeBorderColor": "button-color-main-button-press",
+    "hoverBg": "bg-group-color-1",
+    "activeBg": "bg-group-color-1"
+  },
+  "Select": {
+    "selectorBg": "bg-group-color-1",
+    "clearBg": "bg-group-color-1",
+    "hoverBorderColor": "brand-color-brand-2",
+    "activeBorderColor": "button-color-main-button-press",
+    "activeOutlineColor": "brand-color-brand-3",
+    "optionSelectedColor": "text-color-text-1",
+    "optionSelectedBg": "brand-color-brand-3",
+    "optionActiveBg": "divider-color-divider-4",
+    "multipleItemBg": "divider-color-divider-4",
+    "multipleItemBorderColor": "divider-color-divider-2",
+    "multipleSelectorBgDisabled": "button-color-gray-button-disable",
+    "multipleItemColorDisabled": "text-color-text-6",
+    "multipleItemBorderColorDisabled": "divider-color-divider-3"
+  },
+  "Tabs": {
+    "cardBg": "bg-group-color-1",
+    "inkBarColor": "brand-color-brand-2",
+    "itemColor": "text-color-text-2",
+    "itemHoverColor": "brand-color-brand-2",
+    "itemActiveColor": "brand-color-brand-2",
+    "itemSelectedColor": "brand-color-brand-2"
+  },
+  "Modal": {
+    "headerBg": "bg-group-color-3",
+    "contentBg": "bg-group-color-3",
+    "footerBg": "bg-group-color-3",
+    "titleColor": "text-color-text-1"
+  }
+}

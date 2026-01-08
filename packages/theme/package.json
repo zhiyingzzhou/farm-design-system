@@ -1,0 +1,45 @@
+{
+  "name": "@farm-design-system/theme",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.scss": "./dist/tokens.scss",
+    "./tokens.less": "./dist/tokens.less",
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "import": "./dist/tailwind-preset.js",
+      "require": "./dist/tailwind-preset.cjs"
+    },
+    "./finex-ui.json": "./dist/finex-ui.json",
+    "./adapters/*": "./dist/adapters/*"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsc -p tsconfig.build.json -w",
+    "sync:assets": "tsx scripts/sync-src-assets.ts",
+    "check:antd:coverage": "tsx scripts/check-antd-coverage.ts",
+    "build": "rimraf dist && tsx scripts/sync-src-assets.ts && tsc -p tsconfig.build.json && tsx scripts/build-assets.ts",
+    "build:assets": "tsx scripts/sync-src-assets.ts && tsx scripts/build-assets.ts",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.27",
+    "antd": "^6.1.4",
+    "rimraf": "^6.1.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "antd": ">=6"
+  }
+}

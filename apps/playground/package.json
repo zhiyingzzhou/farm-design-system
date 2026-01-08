@@ -1,0 +1,27 @@
+{
+  "name": "playground",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build -o storybook-static",
+    "clean": "rimraf storybook-static"
+  },
+  "dependencies": {
+    "@farm-design-system/ui": "workspace:*",
+    "antd": "^6.1.4",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@storybook/react": "^10.1.11",
+    "@storybook/react-vite": "^10.1.11",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "rimraf": "^6.1.2",
+    "storybook": "^10.1.11",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0"
+  }
+}

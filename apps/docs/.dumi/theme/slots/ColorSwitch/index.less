@@ -1,0 +1,47 @@
+/**
+ * ColorSwitch 的视觉样式：
+ * - 只负责“按钮组”外观，不参与 prefersColor 的任何逻辑；
+ * - 颜色值走 docs 侧的 CSS 语义变量（见 `apps/docs/.dumi/global.less`）。
+ */
+
+.farm-docs-color-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--docs-border);
+  background: var(--docs-surface);
+}
+
+.farm-docs-color-switch__btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--docs-text-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  &:hover {
+    background: var(--docs-surface-2);
+    color: var(--docs-text);
+  }
+
+  &[data-active] {
+    background: color-mix(in srgb, var(--docs-primary) 14%, transparent);
+    color: var(--docs-primary);
+  }
+}
+

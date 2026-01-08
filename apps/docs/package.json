@@ -1,0 +1,25 @@
+{
+  "name": "docs",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "sync:theme-docs": "node scripts/sync-theme-docs.cjs",
+    "dev": "node scripts/sync-theme-docs.cjs && dumi dev",
+    "build": "node scripts/sync-theme-docs.cjs && dumi build",
+    "preview": "dumi preview",
+    "clean": "rimraf dist .dumi/tmp* .dumi/.cache .dumi/cache"
+  },
+  "dependencies": {
+    "@farm-design-system/ui": "workspace:*",
+    "antd": "^6.1.4",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "dumi": "^2.4.21",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3"
+  }
+}

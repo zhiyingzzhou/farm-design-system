@@ -1,0 +1,48 @@
+/**
+ * Logo 的视觉样式（偏 arco 风格）：
+ * - 左侧 mark + 右侧站点名
+ * - mark 用纯 CSS 实现，避免引入额外图片资产
+ */
+
+.farm-docs-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--docs-text);
+  user-select: none;
+}
+
+.farm-docs-logo__img {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: block;
+}
+
+.farm-docs-logo__text {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.farm-docs-logo__mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--docs-primary) 14%, var(--docs-surface));
+  border: 1px solid var(--docs-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.farm-docs-logo__mark-inner {
+  width: 14px;
+  height: 14px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, var(--docs-primary), var(--docs-accent));
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--docs-primary) 22%, transparent);
+}
+

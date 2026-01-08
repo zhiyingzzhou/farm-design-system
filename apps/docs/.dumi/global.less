@@ -1,0 +1,687 @@
+/**
+ * Farm Design System docs：本地主题的全局样式层。
+ *
+ * 目标：
+ * - 视觉风格参考 arco.design（现代、简洁、信息密度高）
+ * - 仍基于 dumi 默认主题布局，只做“少量 slot 覆盖 + 全局样式覆盖”，降低后续升级成本
+ *
+ * 维护方式：
+ * - 颜色统一走 `--docs-*` 语义变量（避免和 `@farm-design-system/theme` 的 `--farm-*` 变量混淆）
+ * - 暗黑模式由 dumi 写入 `html[data-prefers-color="dark"]`，这里仅依赖该 attribute 做覆盖
+ */
+
+:root {
+  --docs-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC',
+    'Noto Sans', sans-serif;
+  --docs-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+
+  /* arco 风格：偏冷的主色 + 清爽背景 */
+  /* 设计稿品牌色（Finex Brand-2 / Farm Token: brand-color-brand-2） */
+  --docs-primary: #5856d7;
+  --docs-accent: #14c9c9;
+
+  --docs-bg: #f5f7fa;
+  --docs-surface: #ffffff;
+  --docs-surface-2: #f7f8fa;
+
+  --docs-text: #1d2129;
+  --docs-text-2: #4e5969;
+  --docs-muted: #86909c;
+
+  --docs-border: rgba(29, 33, 41, 0.12);
+  --docs-border-2: rgba(29, 33, 41, 0.08);
+
+  --docs-shadow-sm: 0 6px 18px rgba(29, 33, 41, 0.12);
+  --docs-shadow: 0 14px 40px rgba(29, 33, 41, 0.16);
+
+  --docs-radius-lg: 14px;
+  --docs-radius: 12px;
+  --docs-radius-sm: 10px;
+}
+
+html {
+  font-family: var(--docs-font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[data-prefers-color='dark'] {
+  color-scheme: dark;
+  /* 暗色模式下使用设计稿给出的品牌色（Finex Brand-2 dark） */
+  --docs-primary: #6a66f6;
+  --docs-bg: #0b0f16;
+  --docs-surface: #0f172a;
+  --docs-surface-2: #111c33;
+
+  --docs-text: #e5e6eb;
+  --docs-text-2: #c9cdd4;
+  --docs-muted: #86909c;
+
+  --docs-border: rgba(229, 230, 235, 0.16);
+  --docs-border-2: rgba(229, 230, 235, 0.1);
+
+  --docs-shadow-sm: 0 10px 26px rgba(0, 0, 0, 0.5);
+  --docs-shadow: 0 18px 56px rgba(0, 0, 0, 0.6);
+}
+
+body {
+  background: var(--docs-bg);
+  color: var(--docs-text);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--docs-primary) 24%, transparent);
+}
+
+/* Layout */
+.dumi-default-doc-layout {
+  font-family: var(--docs-font-sans);
+  background-color: var(--docs-bg);
+}
+
+/* Header（更接近 arco：轻边框 + 轻磨砂） */
+.dumi-default-header:not([data-static]) {
+  border-bottom: 1px solid var(--docs-border-2);
+  background-color: color-mix(in srgb, var(--docs-bg) 74%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+/* Header 右侧区域：给控件留出一致的间距 */
+.dumi-default-header-right-aside {
+  gap: 10px;
+}
+
+/* 移除旧的渐变分割线（保留 arco 的“干净”感觉） */
+.dumi-default-header:not([data-static])::after {
+  display: none;
+}
+
+/* Navbar（更轻、更克制） */
+.dumi-default-navbar > li {
+  font-size: 14px;
+}
+
+.dumi-default-navbar > li > a,
+.dumi-default-navbar > li > span,
+.dumi-default-navbar > li > .dumi-default-navbar-dropdown > li > a {
+  border-radius: var(--docs-radius-sm);
+  padding: 6px 10px;
+}
+
+.dumi-default-navbar > li > a.active,
+.dumi-default-navbar > li > span.active,
+.dumi-default-navbar > li > .dumi-default-navbar-dropdown > li > a.active {
+  background: transparent;
+  font-weight: 650;
+  color: var(--docs-primary);
+}
+
+/* Search（arco 风格：更克制的输入框 + 更干净的 popover） */
+.dumi-default-search-bar {
+  position: relative;
+}
+
+.dumi-default-search-bar:not(:last-child) {
+  margin-inline-end: 12px;
+}
+
+.dumi-default-search-bar-svg {
+  inset-inline-start: 12px;
+  width: 16px;
+  fill: var(--docs-muted);
+}
+
+.dumi-default-search-bar-input {
+  width: 260px;
+  height: 36px;
+  padding-inline-start: 36px;
+  padding-inline-end: 56px;
+  font-size: 13px;
+  color: var(--docs-text);
+  border: 1px solid var(--docs-border-2);
+  border-radius: 10px;
+  background: var(--docs-surface-2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dumi-default-search-bar-input:focus {
+  background: var(--docs-surface);
+  border-color: color-mix(in srgb, var(--docs-primary) 40%, var(--docs-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--docs-primary) 16%, transparent);
+}
+
+.dumi-default-search-shortcut {
+  inset-inline-end: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--docs-muted);
+  background: color-mix(in srgb, var(--docs-surface) 72%, transparent);
+  border: 1px solid var(--docs-border-2);
+  border-radius: 8px;
+}
+
+.dumi-default-search-popover {
+  margin-top: 10px;
+  width: 520px;
+  border-radius: 12px;
+  border: 1px solid var(--docs-border-2);
+  background: var(--docs-surface);
+  box-shadow: var(--docs-shadow);
+}
+
+.dumi-default-search-popover::before {
+  display: none;
+}
+
+.dumi-default-search-modal-mask {
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.dumi-default-search-modal-content {
+  top: 72px;
+  width: min(720px, calc(100vw - 48px));
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--docs-border-2);
+  background: var(--docs-surface);
+  box-shadow: var(--docs-shadow);
+}
+
+.dumi-default-search-modal .dumi-default-search-bar-input {
+  border-radius: 12px;
+}
+
+.dumi-default-search-modal-commands {
+  border-top: 1px solid var(--docs-border-2);
+  color: var(--docs-muted);
+}
+
+.dumi-default-search-modal-shortcut {
+  background: var(--docs-surface-2);
+  border: 1px solid var(--docs-border-2);
+  border-bottom-width: 2px;
+  border-radius: 8px;
+  color: var(--docs-muted);
+}
+
+/* SearchResult（列表项更像 arco 的“命令面板”） */
+.dumi-default-search-result > dl {
+  margin: 0;
+  padding: 10px 10px 12px;
+}
+
+.dumi-default-search-result > dl > dt {
+  margin: 12px 8px 8px;
+  color: var(--docs-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.dumi-default-search-result > dl > dd {
+  margin: 0;
+}
+
+.dumi-default-search-result > dl > dd > a {
+  display: flex;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  color: var(--docs-text);
+}
+
+.dumi-default-search-result > dl > dd > a > svg {
+  width: 18px;
+  flex: 0 0 auto;
+  opacity: 0.8;
+}
+
+.dumi-default-search-result > dl > dd > a > h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--docs-text);
+}
+
+.dumi-default-search-result > dl > dd > a > p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--docs-text-2);
+}
+
+.dumi-default-search-result > dl > dd > a:hover {
+  background: var(--docs-surface-2);
+}
+
+.dumi-default-search-result > dl > dd > a[data-active] {
+  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+}
+
+.dumi-default-search-result mark {
+  background: color-mix(in srgb, var(--docs-primary) 14%, transparent);
+  color: inherit;
+  border-radius: 6px;
+  padding: 0 4px;
+}
+
+.dumi-default-search-empty {
+  color: var(--docs-muted);
+}
+
+/* Hero（首页） */
+.dumi-default-hero {
+  margin: 0 auto 24px auto;
+  height: 520px;
+  padding: 140px 24px 0;
+  text-align: left;
+}
+
+@media only screen and (max-width: 767px) {
+  .dumi-default-hero {
+    height: 420px;
+    padding-top: 120px;
+  }
+}
+
+.dumi-default-hero::before {
+  background-image: none !important;
+  opacity: 1 !important;
+  background: repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--docs-text) 5%, transparent) 0 1px,
+      transparent 1px 64px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--docs-text) 5%, transparent) 0 1px,
+      transparent 1px 64px
+    ),
+    radial-gradient(900px circle at 18% 18%, color-mix(in srgb, var(--docs-primary) 18%, transparent), transparent 58%),
+    radial-gradient(900px circle at 80% 18%, color-mix(in srgb, var(--docs-accent) 16%, transparent), transparent 58%),
+    linear-gradient(180deg, color-mix(in srgb, var(--docs-bg) 88%, transparent), var(--docs-bg));
+}
+
+.dumi-default-hero-title {
+  margin-bottom: 14px;
+  font-family: var(--docs-font-sans) !important;
+  font-size: clamp(38px, 5vw, 56px) !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.02em;
+  color: var(--docs-text) !important;
+}
+
+.dumi-default-hero-title > span {
+  color: transparent !important;
+  text-shadow: none !important;
+  background: linear-gradient(135deg, var(--docs-primary), var(--docs-accent)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+.dumi-default-hero > p {
+  margin: 12px 0 0;
+  max-width: 64ch;
+  color: var(--docs-text-2);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* Hero actions（更像 arco：左对齐、按钮更紧凑） */
+.dumi-default-hero-actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.dumi-default-hero-actions > a {
+  height: 40px;
+  line-height: 40px;
+  min-width: 0;
+  padding: 0 16px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+.dumi-default-hero-actions > a:first-child {
+  background: var(--docs-primary);
+}
+
+.dumi-default-hero-actions > a:not(:first-child) {
+  color: var(--docs-primary);
+  border-color: var(--docs-primary);
+}
+
+/* Content card（左侧有 sidebar 的文档页） */
+.dumi-default-content:not([data-no-sidebar]) {
+  border-radius: var(--docs-radius-lg);
+  border: 1px solid var(--docs-border-2);
+  background: var(--docs-surface);
+  box-shadow: none;
+}
+
+/* Sidebar（arco 风格：active 用“左侧高亮条”） */
+.dumi-default-sidebar > dl > dt {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--docs-muted);
+}
+
+.dumi-default-sidebar > dl > dd {
+  padding: 4px 0;
+}
+
+.dumi-default-sidebar > dl > dd > a {
+  padding: 8px 10px 8px 12px;
+  border-radius: var(--docs-radius-sm);
+}
+
+.dumi-default-sidebar > dl > dd > a:hover {
+  background: var(--docs-surface-2);
+}
+
+.dumi-default-sidebar > dl > dd > a.active {
+  position: relative;
+  background: transparent;
+  color: var(--docs-primary);
+}
+
+.dumi-default-sidebar > dl > dd > a.active::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: var(--docs-primary);
+}
+
+/* Markdown typography */
+.markdown {
+  color: var(--docs-text);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.markdown p {
+  color: var(--docs-text-2);
+}
+
+.markdown a {
+  color: var(--docs-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.markdown ul,
+.markdown ol {
+  padding-inline-start: 1.25em;
+}
+
+.markdown li {
+  margin: 6px 0;
+}
+
+.markdown hr {
+  height: 1px;
+  border: 0;
+  background: var(--docs-border-2);
+  margin: 28px 0;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  scroll-margin-top: 96px;
+  color: var(--docs-text);
+  letter-spacing: -0.015em;
+}
+
+.markdown h1 > a[aria-hidden]:first-child,
+.markdown h2 > a[aria-hidden]:first-child,
+.markdown h3 > a[aria-hidden]:first-child,
+.markdown h4 > a[aria-hidden]:first-child,
+.markdown h5 > a[aria-hidden]:first-child,
+.markdown h6 > a[aria-hidden]:first-child {
+  width: 18px;
+  margin-inline-start: -22px;
+}
+
+.markdown h1 > a[aria-hidden]:first-child > .icon-link::before,
+.markdown h2 > a[aria-hidden]:first-child > .icon-link::before,
+.markdown h3 > a[aria-hidden]:first-child > .icon-link::before,
+.markdown h4 > a[aria-hidden]:first-child > .icon-link::before,
+.markdown h5 > a[aria-hidden]:first-child > .icon-link::before,
+.markdown h6 > a[aria-hidden]:first-child > .icon-link::before {
+  color: var(--docs-muted);
+  font-size: 16px;
+}
+
+.markdown h2 {
+  border-bottom: 1px solid var(--docs-border-2);
+  padding-bottom: 0.35em;
+}
+
+.markdown *:not(pre) code {
+  font-family: var(--docs-font-mono);
+  font-size: 0.95em;
+  padding: 2px 6px;
+  color: var(--docs-text);
+  background: var(--docs-surface-2);
+  border: 1px solid var(--docs-border-2);
+  border-radius: 8px;
+}
+
+/* Previewer */
+.dumi-default-previewer {
+  border-radius: var(--docs-radius);
+  border-color: var(--docs-border-2);
+  background: var(--docs-surface);
+  overflow: hidden;
+}
+
+.dumi-default-previewer-demo {
+  padding: 28px 22px;
+}
+
+.dumi-default-previewer-meta {
+  border-top-color: var(--docs-border-2);
+}
+
+.dumi-default-previewer-desc > .markdown {
+  border-bottom-color: var(--docs-border-2);
+}
+
+.dumi-default-previewer-actions {
+  height: 36px;
+  border-bottom: 1px solid var(--docs-border-2);
+}
+
+.dumi-default-previewer-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.dumi-default-previewer-action-btn:hover {
+  background: var(--docs-surface-2);
+}
+
+/* Previewer tooltip */
+.dumi-theme-default-tooltip-content {
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.78);
+}
+
+html[data-prefers-color='dark'] .dumi-theme-default-tooltip-content {
+  background-color: rgba(15, 23, 42, 0.92);
+}
+
+/* Code blocks */
+.dumi-default-source-code {
+  border-radius: var(--docs-radius);
+  border: 1px solid var(--docs-border-2);
+  background: var(--docs-surface-2);
+}
+
+.dumi-default-source-code > pre.prism-code,
+.dumi-default-source-code .prism-code {
+  font-family: var(--docs-font-mono);
+}
+
+.dumi-default-source-code-language {
+  top: 10px;
+  right: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--docs-border-2);
+  background: color-mix(in srgb, var(--docs-surface) 72%, transparent);
+  color: var(--docs-muted);
+}
+
+.dumi-default-source-code:hover .dumi-default-source-code-language {
+  opacity: 1;
+  visibility: visible;
+}
+
+.dumi-default-source-code-copy {
+  border-radius: var(--docs-radius-sm);
+  padding: 6px 10px;
+  border: 1px solid var(--docs-border-2);
+  background: color-mix(in srgb, var(--docs-surface) 72%, transparent);
+}
+
+/* TOC */
+.dumi-default-doc-layout-toc-wrapper > h4 {
+  /* 默认是英文 TABLE OF CONTENTS；arco 风格更倾向于“弱标题”，这里直接隐藏 */
+  display: none;
+}
+
+.dumi-default-doc-layout-toc-wrapper::before {
+  content: '目录';
+  display: block;
+  margin: 0 0 10px;
+  color: var(--docs-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.dumi-default-toc {
+  border-inline-start-color: var(--docs-border);
+}
+
+.dumi-default-toc > li {
+  margin: 0;
+}
+
+.dumi-default-toc > li > a {
+  border-radius: var(--docs-radius-sm);
+  padding: 6px 10px;
+}
+
+.dumi-default-toc > li[data-depth='3'] > a {
+  padding-inline-start: 18px;
+  font-size: 12px;
+  color: var(--docs-text-2);
+}
+
+.dumi-default-toc > li > a:hover {
+  background: var(--docs-surface-2);
+}
+
+.dumi-default-toc > li > a.active {
+  border-inline-start-color: var(--docs-primary);
+  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+}
+
+/* Tabs（代码/内容分组） */
+.dumi-default-tabs-nav::after {
+  border-bottom-style: solid;
+  border-bottom-color: var(--docs-border-2);
+}
+
+.dumi-default-tabs-tab-btn {
+  font-size: 13px;
+}
+
+.dumi-default-tabs-ink-bar {
+  height: 2px;
+}
+
+/* ContentTabs（文档页顶部 tab） */
+.dumi-default-content-tabs {
+  height: 52px;
+  border-bottom-color: var(--docs-border-2);
+}
+
+.dumi-default-content-tabs > li > button {
+  font-size: 14px;
+  color: var(--docs-text-2);
+}
+
+.dumi-default-content-tabs > li[data-active] > button {
+  color: var(--docs-text);
+}
+
+.dumi-default-content-tabs > li[data-active]::after {
+  height: 2px;
+  background-color: var(--docs-primary);
+}
+
+/* Markdown table / blockquote（更接近 arco 的文档样式） */
+.markdown table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--docs-border-2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--docs-surface);
+}
+
+.markdown th,
+.markdown td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--docs-border-2);
+  border-right: 1px solid var(--docs-border-2);
+  vertical-align: top;
+}
+
+.markdown tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown th:last-child,
+.markdown td:last-child {
+  border-right: none;
+}
+
+.markdown th {
+  background: var(--docs-surface-2);
+  color: var(--docs-text);
+  font-weight: 650;
+}
+
+.markdown blockquote {
+  margin: 16px 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--docs-primary);
+  border-radius: 10px;
+  background: var(--docs-surface-2);
+  color: var(--docs-text-2);
+}
+
+.markdown blockquote > p {
+  margin: 0;
+}
