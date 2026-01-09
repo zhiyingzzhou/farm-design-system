@@ -7,7 +7,7 @@ export type ModalStyleParams = {
   titleAlign: 'left' | 'center' | 'right';
 };
 
-export const useModalStyles = createStyles((_, params: ModalStyleParams) => {
+export const useModalStyles = createStyles((theme, params: ModalStyleParams) => {
   const { borderRadius, padding, paddingX, titleAlign } = params;
 
   return {
@@ -43,7 +43,7 @@ export const useModalStyles = createStyles((_, params: ModalStyleParams) => {
       margin: 0,
       fontSize: 18,
       fontWeight: 600,
-      color: 'var(--farm-text-color-text-1)',
+      color: theme.colorText,
       textAlign: titleAlign,
     },
     closeButton: {
@@ -54,7 +54,7 @@ export const useModalStyles = createStyles((_, params: ModalStyleParams) => {
       borderRadius: 8,
       background: 'transparent',
       cursor: 'pointer',
-      color: 'var(--farm-text-color-text-3)',
+      color: theme.colorTextTertiary,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -62,14 +62,14 @@ export const useModalStyles = createStyles((_, params: ModalStyleParams) => {
       lineHeight: 1,
       transition: 'background-color 0.15s ease, color 0.15s ease',
       '&:hover': {
-        background: 'var(--farm-divider-color-divider-4)',
-        color: 'var(--farm-text-color-text-1)',
+        background: theme.colorFillQuaternary,
+        color: theme.colorText,
       },
       '&:active': {
-        background: 'var(--farm-divider-color-divider-3)',
+        background: theme.colorFillTertiary,
       },
       '&:focus-visible': {
-        outline: '2px solid var(--farm-brand-color-brand-2)',
+        outline: `2px solid ${theme.colorPrimary}`,
         outlineOffset: 2,
       },
     },
@@ -85,4 +85,3 @@ export const useModalStyles = createStyles((_, params: ModalStyleParams) => {
     },
   };
 });
-

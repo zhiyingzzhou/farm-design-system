@@ -1,55 +1,55 @@
 {
   "Button": {
-    "colorPrimary": "button-color-main-button-normal",
-    "colorPrimaryHover": "button-color-main-button-normal",
-    "colorPrimaryActive": "button-color-main-button-press",
-    "colorBgContainer": "button-color-secondary-white-button-normal",
-    "colorBgContainerDisabled": "button-color-gray-button-disable",
-    "primaryColor": "text-color-text-5",
-    "defaultHoverBg": "button-color-secondary-white-button-press",
-    "defaultActiveBg": "button-color-secondary-grey-button-press",
-    "defaultBorderColor": "divider-color-divider-2",
-    "defaultHoverBorderColor": "brand-color-brand-2",
-    "defaultActiveBorderColor": "button-color-main-button-press",
-    "defaultColor": "text-color-text-1",
-    "defaultHoverColor": "brand-color-brand-2",
-    "defaultActiveColor": "button-color-main-button-press",
-    "textHoverBg": "divider-color-divider-4"
+    "colorPrimary": "Button-Color-Main-button-normal",
+    "colorPrimaryHover": "Button-Color-Main-button-normal",
+    "colorPrimaryActive": "Button-Color-Main-button-Press",
+    "colorBgContainer": "Button-Color-Secondary-White-button-normal",
+    "colorBgContainerDisabled": "Button-Color-gray-button-Disable",
+    "primaryColor": "Text-Color-Text-5",
+    "defaultHoverBg": "Button-Color-Secondary-White-button-Press",
+    "defaultActiveBg": "Button-Color-Secondary-Grey-button-Press",
+    "defaultBorderColor": "Divider-Color-Divider-2",
+    "defaultHoverBorderColor": "Brand-Color-Brand-2",
+    "defaultActiveBorderColor": "Button-Color-Main-button-Press",
+    "defaultColor": "Text-Color-Text-1",
+    "defaultHoverColor": "Brand-Color-Brand-2",
+    "defaultActiveColor": "Button-Color-Main-button-Press",
+    "textHoverBg": "Divider-Color-Divider-4"
   },
   "Input": {
-    "addonBg": "bg-color-bg-2",
-    "hoverBorderColor": "brand-color-brand-2",
-    "activeBorderColor": "button-color-main-button-press",
-    "hoverBg": "bg-group-color-1",
-    "activeBg": "bg-group-color-1"
+    "addonBg": "Bg-Color-Bg-2",
+    "hoverBorderColor": "Brand-Color-Brand-2",
+    "activeBorderColor": "Button-Color-Main-button-Press",
+    "hoverBg": "Bg-group-Color-1",
+    "activeBg": "Bg-group-Color-1"
   },
   "Select": {
-    "selectorBg": "bg-group-color-1",
-    "clearBg": "bg-group-color-1",
-    "hoverBorderColor": "brand-color-brand-2",
-    "activeBorderColor": "button-color-main-button-press",
-    "activeOutlineColor": "brand-color-brand-3",
-    "optionSelectedColor": "text-color-text-1",
-    "optionSelectedBg": "brand-color-brand-3",
-    "optionActiveBg": "divider-color-divider-4",
-    "multipleItemBg": "divider-color-divider-4",
-    "multipleItemBorderColor": "divider-color-divider-2",
-    "multipleSelectorBgDisabled": "button-color-gray-button-disable",
-    "multipleItemColorDisabled": "text-color-text-6",
-    "multipleItemBorderColorDisabled": "divider-color-divider-3"
+    "selectorBg": "Bg-group-Color-1",
+    "clearBg": "Bg-group-Color-1",
+    "hoverBorderColor": "Brand-Color-Brand-2",
+    "activeBorderColor": "Button-Color-Main-button-Press",
+    "activeOutlineColor": "Brand-Color-Brand-3",
+    "optionSelectedColor": "Text-Color-Text-1",
+    "optionSelectedBg": "Brand-Color-Brand-3",
+    "optionActiveBg": "Divider-Color-Divider-4",
+    "multipleItemBg": "Divider-Color-Divider-4",
+    "multipleItemBorderColor": "Divider-Color-Divider-2",
+    "multipleSelectorBgDisabled": "Button-Color-gray-button-Disable",
+    "multipleItemColorDisabled": "Text-Color-Text-6",
+    "multipleItemBorderColorDisabled": "Divider-Color-Divider-3"
   },
   "Tabs": {
-    "cardBg": "bg-group-color-1",
-    "inkBarColor": "brand-color-brand-2",
-    "itemColor": "text-color-text-2",
-    "itemHoverColor": "brand-color-brand-2",
-    "itemActiveColor": "brand-color-brand-2",
-    "itemSelectedColor": "brand-color-brand-2"
+    "cardBg": "Bg-group-Color-1",
+    "inkBarColor": "Brand-Color-Brand-2",
+    "itemColor": "Text-Color-Text-2",
+    "itemHoverColor": "Brand-Color-Brand-2",
+    "itemActiveColor": "Brand-Color-Brand-2",
+    "itemSelectedColor": "Brand-Color-Brand-2"
   },
   "Modal": {
-    "headerBg": "bg-group-color-3",
-    "contentBg": "bg-group-color-3",
-    "footerBg": "bg-group-color-3",
-    "titleColor": "text-color-text-1"
+    "headerBg": "Bg-group-Color-3",
+    "contentBg": "Bg-group-Color-3",
+    "footerBg": "Bg-group-Color-3",
+    "titleColor": "Text-Color-Text-1"
   }
 }

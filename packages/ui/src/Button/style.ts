@@ -19,7 +19,7 @@ const disabledSelector = '&:disabled, &.ant-btn-disabled';
 const enabledHoverSelector = '&:not(:disabled):not(.ant-btn-disabled):hover';
 const enabledActiveSelector = '&:not(:disabled):not(.ant-btn-disabled):active';
 
-export const useButtonStyles = createStyles(() => {
+export const useButtonStyles = createStyles((theme) => {
   return {
     primary: {
       height: PRIMARY_HEIGHT,
@@ -40,17 +40,17 @@ export const useButtonStyles = createStyles(() => {
       fontWeight: FONT_WEIGHT,
       borderColor: 'transparent',
       boxShadow: 'none',
-      backgroundColor: 'var(--farm-button-color-secondary-grey-button-normal)',
-      color: 'var(--farm-text-color-text-1)',
+      backgroundColor: theme.controlItemBgHover,
+      color: theme.colorText,
       [enabledHoverSelector]: {
-        backgroundColor: 'var(--farm-button-color-secondary-grey-button-press)'
+        backgroundColor: theme.colorBgTextHover
       },
       [enabledActiveSelector]: {
-        backgroundColor: 'var(--farm-button-color-secondary-grey-button-press)'
+        backgroundColor: theme.colorBgTextHover
       },
       [disabledSelector]: {
-        backgroundColor: 'var(--farm-button-color-secondary-grey-button-disable)',
-        color: 'var(--farm-text-color-text-3)'
+        backgroundColor: theme.colorBgTextHover,
+        color: theme.colorTextDisabled
       },
       '&:focus-visible': {
         outline: '2px solid currentColor',
@@ -65,17 +65,17 @@ export const useButtonStyles = createStyles(() => {
       fontWeight: FONT_WEIGHT,
       borderColor: 'transparent',
       boxShadow: 'none',
-      backgroundColor: 'var(--farm-button-color-gray-button-normal)',
-      color: 'var(--farm-text-color-text-2)',
+      backgroundColor: theme.colorBgSolid,
+      color: theme.colorTextSecondary,
       [enabledHoverSelector]: {
-        backgroundColor: 'var(--farm-button-color-gray-button-press)'
+        backgroundColor: theme.colorBgSolidHover
       },
       [enabledActiveSelector]: {
-        backgroundColor: 'var(--farm-button-color-gray-button-press)'
+        backgroundColor: theme.colorBgSolidActive
       },
       [disabledSelector]: {
-        backgroundColor: 'var(--farm-button-color-gray-button-disable)',
-        color: 'var(--farm-text-color-text-3)'
+        backgroundColor: theme.colorBgContainerDisabled,
+        color: theme.colorTextDisabled
       },
       '&:focus-visible': {
         outline: '2px solid currentColor',
@@ -84,4 +84,3 @@ export const useButtonStyles = createStyles(() => {
     }
   };
 });
-

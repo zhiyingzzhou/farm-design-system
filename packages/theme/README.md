@@ -1,9 +1,9 @@
 # @farm-design-system/theme
 
-该包将 **Finex 设计 Token**（`finex-ui.json`）统一映射为：
+该包将 **Finex 设计 Token**（`finex-ui.json`）映射为：
 
-- **Farm Token**（用于业务组件 / UI 组件库 / Tailwind / CSS 变量）
-- **Ant Design Token**（用于 `ConfigProvider` 定制主题）
+- **Ant Design Token**（用于 `ConfigProvider` 定制主题；业务组件与 `@farm-design-system/ui` 统一复用 antd token）
+- **CSS 变量 / Tailwind 颜色**（变量名同样基于 antd token，便于在样式层直接复用）
 
 ## 用法（推荐）
 
@@ -14,20 +14,20 @@ import { antdTheme as farmAntdTheme, createTokensCss, cssVars } from '@farm-desi
 import { Button } from '@farm-design-system/ui';
 
 export default function App() {
-  const appearance = 'light';
+  const mode: 'light' | 'dark' = 'light';
 
   return (
     <ConfigProvider
       theme={{
-        ...farmAntdTheme[appearance],
-        algorithm: appearance === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm
+        ...farmAntdTheme[mode],
+        algorithm: mode === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm
       }}
     >
-      {/* 注入 Farm Token 的 CSS 变量（供业务样式/Tailwind 使用） */}
+      {/* 注入基于 antd token 的 CSS 变量（供业务样式/Tailwind 使用） */}
       <style>{createTokensCss({ vars: cssVars })}</style>
 
       {/* 让变量选择器命中（默认选择器包含 [data-theme="light|dark"]） */}
-      <div data-theme={appearance}>
+      <div data-theme={mode}>
         <Button type="primary">Hello</Button>
       </div>
     </ConfigProvider>
@@ -35,39 +35,12 @@ export default function App() {
 }
 ```
 
-## 更底层用法（自行组合）
+默认变量命名：
 
-```tsx
-import React from 'react';
-import { ConfigProvider, theme as antdTheme } from 'antd';
-import { createTheme, createTokensCss } from '@farm-design-system/theme';
+- `colorPrimary` -> `--farm-color-primary`
+- `colorText` -> `--farm-color-text`
 
-export default function App() {
-  const appearance = 'dark';
-  const theme = createTheme({
-    overrides: {
-      light: {
-        // 不同项目品牌色示例
-        'brand-color-brand-2': '#00b96b'
-      }
-    }
-  });
-
-  return (
-    <ConfigProvider
-      theme={{
-        ...theme.antdTheme[appearance],
-        algorithm: appearance === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm
-      }}
-    >
-      <style>{createTokensCss({ vars: theme.cssVars })}</style>
-      {/* ... */}
-    </ConfigProvider>
-  );
-}
-```
-
-## 支持不同项目（覆写 Farm Token）
+## 支持不同项目（覆写 antd token）
 
 ```ts
 import { createTheme } from '@farm-design-system/theme';
@@ -75,7 +48,8 @@ import { createTheme } from '@farm-design-system/theme';
 const theme = createTheme({
   overrides: {
     light: {
-      'brand-color-brand-2': '#00b96b'
+      // 项目 A 的品牌主色
+      colorPrimary: '#00b96b'
     }
   }
 });
@@ -88,9 +62,10 @@ const theme = createTheme({
 1. 用 Token Studio 导出覆盖 `packages/theme/scripts/finex-ui.json`
 2. 运行 `pnpm --filter @farm-design-system/theme sync:assets` 生成：
    - `packages/theme/src/finex-ui.json`
-   - `packages/theme/src/adapters/farm-token-map.json`
    - `packages/theme/src/adapters/antd-token-map.json`
    - `packages/theme/src/adapters/antd-components-map.json`
-3. 如需调整 antd 覆盖范围或组件细化规则，改 `packages/theme/scripts/sync-src-assets.ts`
+3. 运行 `pnpm --filter @farm-design-system/theme check:antd:coverage` 查看是否有 finex key 未被 antd 侧消费到
+4. 如需调整映射规则：改 `packages/theme/scripts/finex-to-antd-map.ts`
 
 更多维护说明见 `packages/theme/MAINTENANCE.md`。
+

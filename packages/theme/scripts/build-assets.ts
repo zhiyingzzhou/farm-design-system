@@ -3,7 +3,7 @@
  * - 从 `src/finex-ui.json` 产出 dist 可消费的 `{ light, dark }` 扁平结构
  *   - `src/finex-ui.json` 允许两种形态：Token Studio 原始导出（含 base/base + Light/Dark 分组）或已解析好的 `{ light, dark }`
  *   - 推荐用 `scripts/sync-src-assets.ts` 固化为已解析形态，避免在运行时重复做引用解析
- * - 基于 farmTokenMap 生成 `tokens.css/.scss/.less`
+ * - 基于 `antd-token-map.json` 生成 `tokens.css/.scss/.less`（变量名以 antd token 为语义）
  * - 生成 Tailwind preset（ESM + CJS）
  */
 
@@ -29,7 +29,6 @@ const srcRoot = path.join(packageRoot, 'src');
 const distRoot = path.join(packageRoot, 'dist');
 
 const finexUiPath = path.join(srcRoot, 'finex-ui.json');
-const farmTokenMapPath = path.join(srcRoot, 'adapters', 'farm-token-map.json');
 const antdTokenMapPath = path.join(srcRoot, 'adapters', 'antd-token-map.json');
 const antdComponentsMapPath = path.join(srcRoot, 'adapters', 'antd-components-map.json');
 const tailwindTypesPath = path.join(srcRoot, 'tailwind.d.ts');
@@ -133,13 +132,10 @@ function toFinexKey(pathParts: string[]): string {
 }
 
 /**
- * 从某个主题分组（Light/Dark）里收集 token，输出为 finexKey -> resolvedValue。
+ * 从某个主题分组（Light/Dark）里收集“颜色 token”，输出为 finexKey -> resolvedValue。
  *
  * 注意：
- * - 本脚本最终产物（tokens.css/scss/less）只会消费 `farmTokenMap` 中的 finexKey；
- *   因此即使输入是 Token Studio 原始导出、分组里包含非颜色 token，也不会影响 CSS 变量产物。
- * - 推荐搭配 `scripts/sync-src-assets.ts` 使用：它会先把 `src/finex-ui.json` 固化为“已解析 + 颜色 token”形态，
- *   这里就只是在构建阶段做转换与输出。
+ * - 这里只同步 `type === "color"` 的 token；避免把 Token Studio 里的字号/间距等混进主题色体系
  */
 function collectThemeTokens(
   tree: unknown,
@@ -151,6 +147,7 @@ function collectThemeTokens(
   for (const [key, value] of Object.entries(tree)) {
     const nextParts = [...prefixParts, key];
     if (isTokenLeaf(value)) {
+      if (value.type !== 'color') continue;
       const finexKey = toFinexKey(nextParts);
       out[finexKey] = resolveTokenValue(value.value, baseLookup);
       continue;
@@ -170,7 +167,7 @@ function collectThemeTokens(
  * 2) 已解析产物：`{ light: Record<string,string>, dark: Record<string,string> }`
  *
  * 返回值约定：
- * - key：finexKey（供 `farm-token-map.json` 指向）
+ * - key：finexKey（供 adapters 指向）
  * - value：最终色值（已解引用）
  */
 function resolveFinexUi(raw: unknown): FinexUiResolved {
@@ -200,53 +197,31 @@ function resolveFinexUi(raw: unknown): FinexUiResolved {
 }
 
 /**
- * Token 名称校验：
- * - 允许：`a-z` / `0-9` / `-`
- * - 支持分段：`xxx.yyy`（为未来扩展预留）
+ * antd token -> CSS var name（与 antd `theme.cssVar.prefix` 的规则保持一致）。
+ *
+ * - prefix = "farm" 时：`colorPrimary` -> `--farm-color-primary`
  */
-function isValidTokenName(token: string): boolean {
-  return /^[a-z0-9-]+(?:\.[a-z0-9-]+)*$/.test(token);
+function tokenToCssVar(token: string, prefix = 'farm'): `--${string}` {
+  return `--${prefix ? `${prefix}-` : ''}${token}`
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/([A-Z]+)([A-Z][a-z0-9]+)/g, '$1-$2')
+    .replace(/([a-z])([A-Z0-9])/g, '$1-$2')
+    .toLowerCase();
 }
 
-/**
- * 将 Farm Token 转为 CSS 变量名。
- *
- * 约定：
- * - 对外统一以 `--farm-` 作为命名空间，避免与业务/第三方变量冲突
- * - `.` 会被替换为 `-`，保证 CSS 变量名合法
- */
-function cssVarName(token: string): `--farm-${string}` {
-  return `--farm-${token.replaceAll('.', '-')}`;
-}
-
-/**
- * 把若干 CSS 变量输出成一个选择器块。
- *
- * 说明：
- * - 排序由 `vars` 的插入顺序决定；这里的上游是 `farm-token-map.json`（脚本生成且稳定），因此产物 diff 不会抖动。
- */
 function formatCssVarBlock(selector: string, vars: Record<string, string>): string {
   const lines = Object.entries(vars).map(([name, value]) => `  ${name}: ${value};`);
   return `${selector} {\n${lines.join('\n')}\n}`;
 }
 
-/**
- * 构建脚本入口：
- * 1) 读取 `src/finex-ui.json` 与 adapters 映射（均由 `sync-src-assets.ts` 生成）
- * 2) 基于 Farm Token 生成 CSS/SCSS/LESS 变量产物
- * 3) 生成 Tailwind preset（ESM + CJS）
- * 4) 将 adapters 与 `tailwind.d.ts` 一并复制到 dist，保证下游“开箱即用”
- */
 async function main() {
-  const [finexUiRaw, farmTokenMapRaw, antdTokenMapRaw, antdComponentsMapRaw] = await Promise.all([
+  const [finexUiRaw, antdTokenMapRaw, antdComponentsMapRaw] = await Promise.all([
     fs.readFile(finexUiPath, 'utf8'),
-    fs.readFile(farmTokenMapPath, 'utf8'),
     fs.readFile(antdTokenMapPath, 'utf8'),
     fs.readFile(antdComponentsMapPath, 'utf8')
   ]);
 
   const finexUi = resolveFinexUi(JSON.parse(finexUiRaw) as unknown);
-  const farmTokenMap = JSON.parse(farmTokenMapRaw) as Record<string, string>;
   const antdTokenMap = JSON.parse(antdTokenMapRaw) as Record<string, string>;
   const antdComponentsMap = JSON.parse(antdComponentsMapRaw) as Record<string, Record<string, string>>;
 
@@ -254,135 +229,76 @@ async function main() {
   const finexLight = finexUi.light ?? {};
   const finexDark = finexUi.dark ?? {};
 
-  for (const [token, finexKey] of Object.entries(farmTokenMap)) {
-    if (!isValidTokenName(token)) {
-      throw new Error(`非法 token 名称 "${token}"`);
-    }
+  for (const [antdToken, finexKey] of Object.entries(antdTokenMap)) {
     if (!(finexKey in finexLight)) {
-      throw new Error(`farmTokenMap["${token}"] 指向不存在的 finex key "${finexKey}" (light)`);
+      throw new Error(`antdTokenMap["${antdToken}"] 指向不存在的 finex key "${finexKey}" (light)`);
     }
     if (!(finexKey in finexDark)) {
-      throw new Error(`farmTokenMap["${token}"] 指向不存在的 finex key "${finexKey}" (dark)`);
-    }
-  }
-
-  for (const [antdToken, token] of Object.entries(antdTokenMap)) {
-    if (!(token in farmTokenMap)) {
-      throw new Error(`antdTokenMap["${antdToken}"] 指向不存在的 Farm Token "${token}"`);
+      throw new Error(`antdTokenMap["${antdToken}"] 指向不存在的 finex key "${finexKey}" (dark)`);
     }
   }
 
   for (const [componentName, tokenMap] of Object.entries(antdComponentsMap)) {
-    for (const [componentToken, token] of Object.entries(tokenMap)) {
-      if (!(token in farmTokenMap)) {
-        throw new Error(`antdComponentsMap["${componentName}"]["${componentToken}"] 指向不存在的 Farm Token "${token}"`);
+    for (const [componentToken, finexKey] of Object.entries(tokenMap)) {
+      if (!(finexKey in finexLight)) {
+        throw new Error(
+          `antdComponentsMap["${componentName}"]["${componentToken}"] 指向不存在的 finex key "${finexKey}" (light)`
+        );
+      }
+      if (!(finexKey in finexDark)) {
+        throw new Error(
+          `antdComponentsMap["${componentName}"]["${componentToken}"] 指向不存在的 finex key "${finexKey}" (dark)`
+        );
       }
     }
   }
 
-  /**
-   * 生成 `dist/tokens.css`：
-   * - light：`:root, [data-theme="light"], .light`
-   * - dark：`[data-theme="dark"], .dark`
-   *
-   * 这样做的好处：
-   * - 既支持“属性切换”（业务常用 `data-theme`），也支持“类名切换”（部分站点/老项目）
-   * - 不依赖任何运行时 JS，纯 CSS 即可生效
-   */
   function buildTokensCss(): string {
     const lightVars: Record<string, string> = {};
     const darkVars: Record<string, string> = {};
 
-    for (const [token, finexKey] of Object.entries(farmTokenMap)) {
-      const varName = cssVarName(token);
+    for (const [antdToken, finexKey] of Object.entries(antdTokenMap)) {
+      const varName = tokenToCssVar(antdToken, 'farm');
       lightVars[varName] = finexUi.light[finexKey];
       darkVars[varName] = finexUi.dark[finexKey];
     }
 
     return [
       '/* Auto-generated by @farm-design-system/theme. */',
-      formatCssVarBlock(':root, [data-theme="light"], .light', lightVars),
-      formatCssVarBlock('[data-theme="dark"], .dark', darkVars),
+      formatCssVarBlock(':root, [data-theme=\"light\"], .light', lightVars),
+      formatCssVarBlock('[data-theme=\"dark\"], .dark', darkVars),
       ''
     ].join('\n\n');
   }
 
-  /**
-   * 生成 `dist/tokens.scss`：
-   * - 输出 `$farm-xxx: var(--farm-xxx);`
-   * - 目的是让 Sass 项目里可以用变量名获得更好的可读性（本质仍是引用 CSS 变量）
-   */
   function buildTokensScss(): string {
     const lines = ['/* Auto-generated by @farm-design-system/theme. */', ''];
-    for (const token of Object.keys(farmTokenMap)) {
-      const varName = cssVarName(token);
-      const scssName = token.replaceAll('.', '-');
-      lines.push(`$farm-${scssName}: var(${varName});`);
+    for (const antdToken of Object.keys(antdTokenMap)) {
+      const varName = tokenToCssVar(antdToken, 'farm');
+      const name = varName.replace(/^--farm-/, '');
+      lines.push(`$farm-${name}: var(${varName});`);
     }
     lines.push('');
     return lines.join('\n');
   }
 
-  /**
-   * 生成 `dist/tokens.less`：
-   * - 输出 `@farm-xxx: var(--farm-xxx);`
-   * - 与 scss 一样，只做“变量别名”，不复制一份颜色值（避免多处真值导致不一致）
-   */
   function buildTokensLess(): string {
     const lines = ['/* Auto-generated by @farm-design-system/theme. */', ''];
-    for (const token of Object.keys(farmTokenMap)) {
-      const varName = cssVarName(token);
-      const lessName = token.replaceAll('.', '-');
-      lines.push(`@farm-${lessName}: var(${varName});`);
+    for (const antdToken of Object.keys(antdTokenMap)) {
+      const varName = tokenToCssVar(antdToken, 'farm');
+      const name = varName.replace(/^--farm-/, '');
+      lines.push(`@farm-${name}: var(${varName});`);
     }
     lines.push('');
     return lines.join('\n');
   }
 
-  /**
-   * 给对象按路径写入值（用于拼 Tailwind 的 `theme.extend.colors`）。
-   *
-   * 示例：
-   * - pathParts = ["button", "primary"]
-   * - value = "var(--farm-button-primary)"
-   * 结果：`obj.button.primary = value`
-   */
-  function setNestedValue(obj: Record<string, unknown>, pathParts: string[], value: string): void {
-    let current: Record<string, unknown> = obj;
-    for (let i = 0; i < pathParts.length - 1; i += 1) {
-      const key = pathParts[i]!;
-      const next = current[key];
-      if (!next || typeof next !== 'object') {
-        current[key] = {};
-      }
-      current = current[key] as Record<string, unknown>;
-    }
-    current[pathParts[pathParts.length - 1]!] = value;
-  }
-
-  /**
-   * 生成 Tailwind preset（只包含颜色扩展）。
-   *
-   * 输出形态：
-   * ```ts
-   * {
-   *   theme: {
-   *     extend: {
-   *       colors: { farm: { ... } }
-   *     }
-   *   }
-   * }
-   * ```
-   *
-   * 约定：
-   * - `farm.xxx` 的值永远是 `var(--farm-xxx)`，切换主题时 Tailwind 颜色会跟着 CSS 变量一起变
-   * - 不做 Tailwind 其它能力的定制（spacing/font/radius 等），避免主题包侵入项目构建配置
-   */
   function buildTailwindPreset() {
-    const colors: Record<string, unknown> = {};
-    for (const token of Object.keys(farmTokenMap)) {
-      const pathParts = token.split('.');
-      setNestedValue(colors, pathParts, `var(${cssVarName(token)})`);
+    const colors: Record<string, string> = {};
+    for (const antdToken of Object.keys(antdTokenMap)) {
+      const varName = tokenToCssVar(antdToken, 'farm');
+      const key = varName.replace(/^--farm-/, '');
+      colors[key] = `var(${varName})`;
     }
 
     return {
@@ -401,7 +317,6 @@ async function main() {
 
   await Promise.all([
     fs.writeFile(path.join(distRoot, 'finex-ui.json'), JSON.stringify(finexUi, null, 2), 'utf8'),
-    fs.copyFile(farmTokenMapPath, path.join(distRoot, 'adapters', 'farm-token-map.json')),
     fs.copyFile(antdTokenMapPath, path.join(distRoot, 'adapters', 'antd-token-map.json')),
     fs.copyFile(antdComponentsMapPath, path.join(distRoot, 'adapters', 'antd-components-map.json')),
     fs.copyFile(tailwindTypesPath, path.join(distRoot, 'tailwind.d.ts')),
@@ -443,3 +358,4 @@ async function main() {
 }
 
 await main();
+

@@ -24,7 +24,7 @@ export type FarmProviderProps = {
   scope?: FarmThemeScope;
   /**
    * CSS 变量声明文本（通常来自 `createTokensCss()` 或 `createTheme().cssVars`）。
-   * - 默认会注入 `createTokensCss()` 的结果（同时包含 light/dark 两套选择器）
+   * - 默认会注入 `createTokensCss()` 的结果（变量名基于 antd token，包含 light/dark 两套选择器）
    * - 传空字符串可关闭注入
    */
   tokensCss?: string;
