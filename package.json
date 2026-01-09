@@ -12,10 +12,12 @@
     "dev:docs": "turbo run dev --filter=docs",
     "dev:ui": "turbo run dev --filter=@farm-design-system/ui",
     "storybook": "turbo run dev --filter=playground",
-    "test": "turbo run test",
+    "test": "turbo run test --log-order=grouped --log-prefix=none",
     "clean": "turbo run clean"
   },
   "devDependencies": {
-    "turbo": "^2.7.2"
+    "@types/node": "^20.19.27",
+    "turbo": "^2.7.2",
+    "vitest": "^4.0.16"
   }
 }

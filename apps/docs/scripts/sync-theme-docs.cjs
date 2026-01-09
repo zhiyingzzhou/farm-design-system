@@ -3,10 +3,10 @@
  *
  * 背景：
  * - 维护手册的“唯一真相”是：`packages/theme/MAINTENANCE.md`
- * - 文档站需要一份可直接阅读的页面：`apps/docs/docs/theme-maintenance.md`
+ * - 文档站需要一份可直接阅读的页面：`apps/docs/docs/theme/maintenance.md`
  *
  * 约定：
- * - `apps/docs/docs/theme-maintenance.md` 由本脚本生成，请勿手改；
+ * - `apps/docs/docs/theme/maintenance.md` 由本脚本生成，请勿手改；
  * - 需要更新文案时，只改 `packages/theme/MAINTENANCE.md`，然后执行：
  *   - `pnpm --filter docs sync:theme-docs`（只同步文档）
  *   - 或 `pnpm --filter docs build`（构建前会自动同步）
@@ -51,7 +51,7 @@ async function readTextIfExists(filePath) {
 async function main() {
   const repoRoot = path.resolve(__dirname, '..', '..', '..');
   const sourcePath = path.join(repoRoot, 'packages', 'theme', 'MAINTENANCE.md');
-  const targetPath = path.join(repoRoot, 'apps', 'docs', 'docs', 'theme-maintenance.md');
+  const targetPath = path.join(repoRoot, 'apps', 'docs', 'docs', 'theme', 'maintenance.md');
 
   const source = await readTextIfExists(sourcePath);
   if (!source) {
@@ -63,6 +63,9 @@ async function main() {
     '---',
     'title: 主题维护手册',
     'order: 2',
+    'group:',
+    '  title: 维护',
+    '  order: 2',
     'toc: content',
     '---',
     '',
@@ -82,7 +85,7 @@ async function main() {
 
   await fs.mkdir(path.dirname(targetPath), { recursive: true });
   await fs.writeFile(targetPath, next, 'utf8');
-  console.log('[docs] 已同步主题维护手册：apps/docs/docs/theme-maintenance.md');
+  console.log('[docs] 已同步主题维护手册：apps/docs/docs/theme/maintenance.md');
 }
 
 main().catch((error) => {

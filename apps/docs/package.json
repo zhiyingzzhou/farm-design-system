@@ -7,19 +7,26 @@
     "dev": "node scripts/sync-theme-docs.cjs && dumi dev",
     "build": "node scripts/sync-theme-docs.cjs && dumi build",
     "preview": "dumi preview",
+    "test": "vitest run",
     "clean": "rimraf dist .dumi/tmp* .dumi/.cache .dumi/cache"
   },
   "dependencies": {
+    "@farm-design-system/theme": "workspace:*",
     "@farm-design-system/ui": "workspace:*",
     "antd": "^6.1.4",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@types/node": "^20.19.27",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "dumi": "^2.4.21",
+    "jsdom": "^27.4.0",
     "rimraf": "^6.1.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   }
 }

@@ -10,6 +10,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
     "./tokens.css": "./dist/tokens.css",
     "./tokens.scss": "./dist/tokens.scss",
     "./tokens.less": "./dist/tokens.less",
@@ -24,22 +28,40 @@
   "files": [
     "dist"
   ],
+  "dependencies": {
+    "@ant-design/cssinjs": "^2.0.1"
+  },
   "scripts": {
     "dev": "tsc -p tsconfig.build.json -w",
     "sync:assets": "tsx scripts/sync-src-assets.ts",
     "check:antd:coverage": "tsx scripts/check-antd-coverage.ts",
     "build": "rimraf dist && tsx scripts/sync-src-assets.ts && tsc -p tsconfig.build.json && tsx scripts/build-assets.ts",
     "build:assets": "tsx scripts/sync-src-assets.ts && tsx scripts/build-assets.ts",
+    "test": "vitest run",
     "clean": "rimraf dist"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
     "@types/node": "^20.19.27",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "antd": "^6.1.4",
+    "jsdom": "^27.4.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "rimraf": "^6.1.2",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "antd": ">=6"
+    "antd": ">=6",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   }
 }

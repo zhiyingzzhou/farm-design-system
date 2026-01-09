@@ -1,9 +1,10 @@
-import { Button as AntButton } from 'antd';
-import type { ButtonProps as AntButtonProps } from 'antd';
+export { Button } from './button';
+export type { ButtonProps } from './button';
 
-export type ButtonProps = AntButtonProps;
-
-export function Button(props: ButtonProps) {
-  return <AntButton {...props} />;
-}
+export { CancelButton } from './cancel';
+export type { CancelButtonProps } from './cancel';
+export { GreyButton } from './grey';
+export type { GreyButtonProps } from './grey';
+export { PrimaryButton } from './primary';
+export type { PrimaryButtonProps } from './primary';
 

@@ -12,7 +12,7 @@ export default defineConfig({
   },
   /**
    * dumi 默认主题基于 less 变量组织样式：
-   * - 这里通过 Umi 的 `theme` 变量覆写“基础视觉”（颜色/布局尺寸），让默认组件整体更接近 arco 风格
+   * - 这里通过 Umi 的 `theme` 变量覆写“基础视觉”（颜色/布局尺寸），让默认组件整体更接近 VitePress 风格
    * - 细节再由 `apps/docs/.dumi/global.less` 与少量 slot 覆盖完成
    */
   theme: {
@@ -20,17 +20,20 @@ export default defineConfig({
     // 设计稿品牌色：Light = #5856d7，Dark = #6a66f6（与 @farm-design-system/theme 的 Brand-2 一致）
     '@c-primary': '#5856d7',
     '@c-primary-dark': '#6a66f6',
-    '@c-site-bg': '#f5f7fa',
-    '@c-text': '#1d2129',
-    '@c-text-secondary': '#4e5969',
-    '@c-text-note': '#86909c',
-    '@c-border': '#e5e6eb',
-    '@c-border-light': '#f2f3f5',
+    // VitePress 的 Light 背景更偏白，边框与文本更克制
+    '@c-site-bg': '#ffffff',
+    '@c-text': '#3c3c43',
+    '@c-text-secondary': '#5d5d68',
+    '@c-text-note': '#8f8f99',
+    '@c-border': '#e2e2e3',
+    '@c-border-light': '#f1f1f2',
 
     // Layout
-    '@s-sidebar-width': '240px',
+    // 对齐 farm-design-docs：内容容器更克制（max-w-7xl ≈ 1280px），侧栏 280px
+    '@s-content-width': '1280px',
+    '@s-sidebar-width': '280px',
     '@s-header-height': '64px',
-    '@s-header-height-m': '52px'
+    '@s-header-height-m': '56px'
   },
   alias: {
     '@farm-design-system/ui': path.join(repoRoot, 'packages/ui/src'),

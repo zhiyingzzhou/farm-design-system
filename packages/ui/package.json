@@ -17,10 +17,14 @@
   "scripts": {
     "dev": "father dev",
     "build": "father build",
+    "test": "vitest run",
     "clean": "rimraf dist es lib"
   },
   "dependencies": {
-    "@farm-design-system/utils": "workspace:*"
+    "@farm-design-system/theme": "workspace:*",
+    "@farm-design-system/utils": "workspace:*",
+    "es-toolkit": "^1.43.0",
+    "tailwind-merge": "^3.4.0"
   },
   "peerDependencies": {
     "antd": ">=6",
@@ -28,13 +32,18 @@
     "react-dom": ">=19"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@types/node": "^20.19.27",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "antd": "^6.1.4",
     "father": "^4.6.13",
+    "jsdom": "^27.4.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "rimraf": "^6.1.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   }
 }

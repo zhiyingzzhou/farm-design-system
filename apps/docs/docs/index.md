@@ -2,12 +2,12 @@
 title: Farm Design System
 hero:
   title: Farm Design System
-  description: pnpm + Turborepo + dumi + father + Storybook
+  description: 为团队提供一致的体验基础，让构建更快、更稳、更优雅。
   actions:
-    - text: 主题使用
-      link: /theme
-    - text: 主题维护
-      link: /theme-maintenance
+    - text: 快速开始
+      link: /guide/quick-start
+    - text: 指南
+      link: /guide
 ---
 
 ## 快速开始
@@ -16,16 +16,3 @@ hero:
 pnpm install
 pnpm dev:docs
 ```
-
-## Button
-
-```tsx
-import React from 'react';
-import { Button } from '@farm-design-system/ui';
-
-export default () => <Button type="primary">Hello</Button>;
-```
-
-## 主题
-
-- 主题体系说明：`@farm-design-system/theme`（见「[主题](/theme)」）

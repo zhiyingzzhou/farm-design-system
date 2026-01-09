@@ -7,6 +7,7 @@
  *   - `createTokensCss()` 生成 CSS 变量并注入
  *   - `antdTheme`/`createTheme().antdTheme` 交给 antd `ConfigProvider`
  *   - `tailwindPreset` 作为 Tailwind presets 引入
+ * - 如需 React 侧的统一接入封装，请使用 `@farm-design-system/theme/react`（可选入口）
  *
  * 维护说明见：`packages/theme/MAINTENANCE.md`
  */

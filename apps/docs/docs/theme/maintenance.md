@@ -1,6 +1,9 @@
 ---
 title: 主题维护手册
 order: 2
+group:
+  title: 维护
+  order: 2
 toc: content
 ---
 

@@ -2,9 +2,11 @@ import { defineConfig } from 'father';
 
 export default defineConfig({
   esm: {
-    output: 'es'
+    output: 'es',
+    ignores: ['**/__tests__/**', '**/*.test.*', '**/*.spec.*']
   },
   cjs: {
-    output: 'lib'
+    output: 'lib',
+    ignores: ['**/__tests__/**', '**/*.test.*', '**/*.spec.*']
   }
 });

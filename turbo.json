@@ -10,11 +10,10 @@
       "persistent": true
     },
     "test": {
-      "outputs": ["coverage/**"]
+      "cache": false
     },
     "clean": {
       "cache": false
     }
   }
 }
-

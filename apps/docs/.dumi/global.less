@@ -2,12 +2,12 @@
  * Farm Design System docs：本地主题的全局样式层。
  *
  * 目标：
- * - 视觉风格参考 arco.design（现代、简洁、信息密度高）
+ * - 视觉风格参考 VitePress（现代、克制、内容优先）
  * - 仍基于 dumi 默认主题布局，只做“少量 slot 覆盖 + 全局样式覆盖”，降低后续升级成本
  *
  * 维护方式：
  * - 颜色统一走 `--docs-*` 语义变量（避免和 `@farm-design-system/theme` 的 `--farm-*` 变量混淆）
- * - 暗黑模式由 dumi 写入 `html[data-prefers-color="dark"]`，这里仅依赖该 attribute 做覆盖
+ * - 暗黑模式由主题包 FarmProvider 写入 `html[data-theme="dark"]`，这里以该 attribute 作为最终样式依据
  */
 
 :root {
@@ -17,24 +17,29 @@
   --docs-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
 
-  /* arco 风格：偏冷的主色 + 清爽背景 */
-  /* 设计稿品牌色（Finex Brand-2 / Farm Token: brand-color-brand-2） */
-  --docs-primary: #5856d7;
-  --docs-accent: #14c9c9;
+  /**
+   * docs 颜色全部基于 @farm-design-system/theme 注入的 CSS 变量（--farm-*）。
+   * - 这样 docs 会跟随 FarmProvider 的 mode/项目覆写同步变化
+   * - 不在 docs 里再维护第二套色板
+   */
+  --docs-bg: var(--farm-bg-color-bg-1);
+  --docs-surface: var(--farm-bg-group-color-1);
+  --docs-surface-2: var(--farm-bg-group-color-3);
 
-  --docs-bg: #f5f7fa;
-  --docs-surface: #ffffff;
-  --docs-surface-2: #f7f8fa;
+  --docs-text: var(--farm-text-color-text-1);
+  --docs-text-2: var(--farm-text-color-text-2);
+  --docs-muted: var(--farm-text-color-text-3);
 
-  --docs-text: #1d2129;
-  --docs-text-2: #4e5969;
-  --docs-muted: #86909c;
+  --docs-border: var(--farm-divider-color-divider-1);
+  --docs-border-2: var(--farm-divider-color-divider-2);
 
-  --docs-border: rgba(29, 33, 41, 0.12);
-  --docs-border-2: rgba(29, 33, 41, 0.08);
+  --docs-primary: var(--farm-brand-color-brand-2);
+  --docs-accent: var(--farm-brand-color-brand-3);
+  --docs-accent-bg: color-mix(in srgb, var(--docs-primary) 10%, var(--docs-bg));
+  --docs-accent-bg-hover: color-mix(in srgb, var(--docs-primary) 14%, var(--docs-bg));
 
-  --docs-shadow-sm: 0 6px 18px rgba(29, 33, 41, 0.12);
-  --docs-shadow: 0 14px 40px rgba(29, 33, 41, 0.16);
+  --docs-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 30px rgba(0, 0, 0, 0.08);
+  --docs-shadow: 0 18px 56px rgba(0, 0, 0, 0.16);
 
   --docs-radius-lg: 14px;
   --docs-radius: 12px;
@@ -46,23 +51,11 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
-html[data-prefers-color='dark'] {
+html[data-theme='dark'] {
   color-scheme: dark;
-  /* 暗色模式下使用设计稿给出的品牌色（Finex Brand-2 dark） */
-  --docs-primary: #6a66f6;
-  --docs-bg: #0b0f16;
-  --docs-surface: #0f172a;
-  --docs-surface-2: #111c33;
-
-  --docs-text: #e5e6eb;
-  --docs-text-2: #c9cdd4;
-  --docs-muted: #86909c;
-
-  --docs-border: rgba(229, 230, 235, 0.16);
-  --docs-border-2: rgba(229, 230, 235, 0.1);
-
   --docs-shadow-sm: 0 10px 26px rgba(0, 0, 0, 0.5);
   --docs-shadow: 0 18px 56px rgba(0, 0, 0, 0.6);
 }
@@ -76,17 +69,77 @@ body {
   background: color-mix(in srgb, var(--docs-primary) 24%, transparent);
 }
 
+/* Motion（参考 farm-design-docs：轻量动效） */
+@keyframes farm-docs-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes farm-docs-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* Layout */
 .dumi-default-doc-layout {
   font-family: var(--docs-font-sans);
   background-color: var(--docs-bg);
 }
 
-/* Header（更接近 arco：轻边框 + 轻磨砂） */
-.dumi-default-header:not([data-static]) {
+/* Container（对齐 farm-design-docs：px-4 sm:px-6 lg:px-8） */
+.dumi-default-header-content,
+.dumi-default-doc-layout > main,
+.dumi-default-hero,
+.dumi-default-features {
+  padding-inline: 16px;
+}
+
+@media only screen and (min-width: 640px) {
+  .dumi-default-header-content,
+  .dumi-default-doc-layout > main,
+  .dumi-default-hero,
+  .dumi-default-features {
+    padding-inline: 24px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .dumi-default-header-content,
+  .dumi-default-doc-layout > main,
+  .dumi-default-hero,
+  .dumi-default-features {
+    padding-inline: 32px;
+  }
+}
+
+/* Header（VitePress 风格：轻边框 + 轻磨砂） */
+.dumi-default-header {
+  z-index: 50;
   border-bottom: 1px solid var(--docs-border-2);
   background-color: color-mix(in srgb, var(--docs-bg) 74%, transparent);
   backdrop-filter: blur(12px);
+}
+
+.dumi-default-header[data-static] {
+  position: sticky;
+  top: 0;
+}
+
+.dumi-default-header[data-mobile-active] {
+  background-color: var(--docs-bg);
+  backdrop-filter: none;
 }
 
 /* Header 右侧区域：给控件留出一致的间距 */
@@ -94,8 +147,8 @@ body {
   gap: 10px;
 }
 
-/* 移除旧的渐变分割线（保留 arco 的“干净”感觉） */
-.dumi-default-header:not([data-static])::after {
+/* 移除旧的渐变分割线 */
+.dumi-default-header::after {
   display: none;
 }
 
@@ -109,51 +162,68 @@ body {
 .dumi-default-navbar > li > .dumi-default-navbar-dropdown > li > a {
   border-radius: var(--docs-radius-sm);
   padding: 6px 10px;
+  color: var(--docs-text-2);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dumi-default-navbar > li > a:hover,
+.dumi-default-navbar > li > span:hover,
+.dumi-default-navbar > li > .dumi-default-navbar-dropdown > li > a:hover {
+  background: var(--docs-surface-2);
+  color: var(--docs-text);
 }
 
 .dumi-default-navbar > li > a.active,
 .dumi-default-navbar > li > span.active,
 .dumi-default-navbar > li > .dumi-default-navbar-dropdown > li > a.active {
-  background: transparent;
-  font-weight: 650;
+  background: var(--docs-accent-bg);
+  font-weight: 600;
   color: var(--docs-primary);
 }
 
-/* Search（arco 风格：更克制的输入框 + 更干净的 popover） */
-.dumi-default-search-bar {
+/* Search（参考 farm-design-docs：focus 扩展 + kbd 提示） */
+.dumi-default-header .dumi-default-search-bar {
   position: relative;
+  width: 192px;
+  flex: 0 1 192px;
+  min-width: 0;
+  transition: width 0.3s ease;
 }
 
-.dumi-default-search-bar:not(:last-child) {
-  margin-inline-end: 12px;
+.dumi-default-header .dumi-default-search-bar:not(:last-child) {
+  margin-inline-end: 0;
 }
 
-.dumi-default-search-bar-svg {
+.dumi-default-header .dumi-default-search-bar:focus-within {
+  width: 256px;
+  flex-basis: 256px;
+}
+
+.dumi-default-header .dumi-default-search-bar-svg {
   inset-inline-start: 12px;
   width: 16px;
   fill: var(--docs-muted);
 }
 
-.dumi-default-search-bar-input {
-  width: 260px;
+.dumi-default-header .dumi-default-search-bar-input {
+  width: 100%;
   height: 36px;
   padding-inline-start: 36px;
   padding-inline-end: 56px;
   font-size: 13px;
   color: var(--docs-text);
-  border: 1px solid var(--docs-border-2);
+  border: 0;
   border-radius: 10px;
   background: var(--docs-surface-2);
-  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.dumi-default-search-bar-input:focus {
+.dumi-default-header .dumi-default-search-bar-input:focus {
   background: var(--docs-surface);
-  border-color: color-mix(in srgb, var(--docs-primary) 40%, var(--docs-border));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--docs-primary) 16%, transparent);
 }
 
-.dumi-default-search-shortcut {
+.dumi-default-header .dumi-default-search-shortcut {
   inset-inline-end: 10px;
   padding: 4px 8px;
   font-size: 12px;
@@ -165,7 +235,7 @@ body {
 
 .dumi-default-search-popover {
   margin-top: 10px;
-  width: 520px;
+  width: min(520px, calc(100vw - 32px));
   border-radius: 12px;
   border: 1px solid var(--docs-border-2);
   background: var(--docs-surface);
@@ -192,6 +262,24 @@ body {
 
 .dumi-default-search-modal .dumi-default-search-bar-input {
   border-radius: 12px;
+}
+
+@media only screen and (max-width: 767px) {
+  .dumi-default-search-bar {
+    width: min(100%, 520px);
+  }
+
+  .dumi-default-search-bar:focus-within {
+    width: min(100%, 520px);
+  }
+
+  .dumi-default-header .dumi-default-search-bar-input {
+    padding-inline-end: 18px;
+  }
+
+  .dumi-default-header .dumi-default-search-shortcut {
+    display: none;
+  }
 }
 
 .dumi-default-search-modal-commands {
@@ -258,11 +346,11 @@ body {
 }
 
 .dumi-default-search-result > dl > dd > a[data-active] {
-  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+  background: var(--docs-accent-bg);
 }
 
 .dumi-default-search-result mark {
-  background: color-mix(in srgb, var(--docs-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--docs-primary) 16%, transparent);
   color: inherit;
   border-radius: 6px;
   padding: 0 4px;
@@ -274,35 +362,29 @@ body {
 
 /* Hero（首页） */
 .dumi-default-hero {
-  margin: 0 auto 24px auto;
-  height: 520px;
-  padding: 140px 24px 0;
+  margin: 0 auto 40px auto;
+  height: auto;
+  padding-block-start: 96px;
+  padding-block-end: 56px;
   text-align: left;
+  max-width: 1280px;
+  box-sizing: border-box;
 }
 
 @media only screen and (max-width: 767px) {
   .dumi-default-hero {
-    height: 420px;
-    padding-top: 120px;
+    padding-block-start: 84px;
+    padding-block-end: 48px;
   }
 }
 
 .dumi-default-hero::before {
   background-image: none !important;
   opacity: 1 !important;
-  background: repeating-linear-gradient(
-      to right,
-      color-mix(in srgb, var(--docs-text) 5%, transparent) 0 1px,
-      transparent 1px 64px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--docs-text) 5%, transparent) 0 1px,
-      transparent 1px 64px
-    ),
-    radial-gradient(900px circle at 18% 18%, color-mix(in srgb, var(--docs-primary) 18%, transparent), transparent 58%),
-    radial-gradient(900px circle at 80% 18%, color-mix(in srgb, var(--docs-accent) 16%, transparent), transparent 58%),
-    linear-gradient(180deg, color-mix(in srgb, var(--docs-bg) 88%, transparent), var(--docs-bg));
+  background:
+    radial-gradient(700px circle at 18% 18%, color-mix(in srgb, var(--docs-primary) 18%, transparent), transparent 60%),
+    radial-gradient(700px circle at 82% 18%, color-mix(in srgb, var(--docs-accent) 14%, transparent), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--docs-bg) 92%, transparent), var(--docs-bg));
 }
 
 .dumi-default-hero-title {
@@ -330,7 +412,7 @@ body {
   line-height: 1.8;
 }
 
-/* Hero actions（更像 arco：左对齐、按钮更紧凑） */
+/* Hero actions（参考 VitePress：主按钮 + 次按钮） */
 .dumi-default-hero-actions {
   margin-top: 28px;
   display: flex;
@@ -352,25 +434,136 @@ body {
 }
 
 .dumi-default-hero-actions > a:not(:first-child) {
-  color: var(--docs-primary);
-  border-color: var(--docs-primary);
+  background: var(--docs-surface-2);
+  border-color: var(--docs-border-2);
+  color: var(--docs-text);
 }
 
-/* Content card（左侧有 sidebar 的文档页） */
-.dumi-default-content:not([data-no-sidebar]) {
-  border-radius: var(--docs-radius-lg);
+/* Features（首页） */
+.dumi-default-features {
+  margin: 0 auto 56px;
+  max-width: 1280px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 960px) {
+  .dumi-default-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .dumi-default-features {
+    margin-bottom: 44px;
+    gap: 12px;
+    grid-template-columns: 1fr;
+  }
+}
+
+.dumi-default-features-item {
+  float: none;
+  width: auto !important;
+  margin: 0;
+  padding: 16px 16px 14px;
+  border-radius: var(--docs-radius);
   border: 1px solid var(--docs-border-2);
+  background: var(--docs-surface-2);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.dumi-default-features-item:hover {
+  border-color: color-mix(in srgb, var(--docs-primary) 35%, var(--docs-border));
   background: var(--docs-surface);
+  box-shadow: var(--docs-shadow-sm);
+  transform: translateY(-1px);
+}
+
+.dumi-default-features-item > i {
+  font-size: 28px;
+  font-style: normal;
+}
+
+.dumi-default-features-item > h3 {
+  margin: 10px 0 6px;
+  color: var(--docs-text);
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.dumi-default-features-item > p {
+  margin: 0;
+  color: var(--docs-text-2);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Content（文档页） */
+.dumi-default-content:not([data-no-sidebar]) {
+  border-radius: 0;
+  border: none;
+  background: var(--docs-bg);
   box-shadow: none;
 }
 
 /* Sidebar（arco 风格：active 用“左侧高亮条”） */
+.dumi-default-sidebar {
+  background: transparent;
+  border-inline-end: 1px solid var(--docs-border-2);
+}
+
+/* Mobile bar（移动端：目录入口/分组条） */
+.dumi-default-doc-layout-mobile-bar {
+  border-top: 1px solid var(--docs-border-2);
+  background-color: color-mix(in srgb, var(--docs-bg) 78%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.dumi-default-doc-layout-mobile-bar .dumi-default-sidebar-btn {
+  font-size: 13px;
+  color: var(--docs-text-2);
+}
+
+.dumi-default-doc-layout-mobile-bar .dumi-default-sidebar-btn:hover {
+  color: var(--docs-text);
+}
+
+@media only screen and (max-width: 767px) {
+  /* Mobile sidebar mask（对齐 farm-design-docs：遮罩在 Header 之下，带轻磨砂） */
+  .dumi-default-doc-layout::before {
+    z-index: 40;
+    background-color: color-mix(in srgb, var(--docs-bg) 82%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .dumi-default-sidebar {
+    z-index: 50;
+    background: var(--docs-bg);
+    box-shadow: var(--docs-shadow-sm);
+    top: 56px;
+    border-top: none;
+  }
+
+  .dumi-default-doc-layout[data-mobile-sidebar-active] .dumi-default-sidebar {
+    animation: farm-docs-slide-in-left 0.3s ease-out;
+  }
+}
+
 .dumi-default-sidebar > dl > dt {
+  margin: 10px 0 6px;
   font-size: 12px;
   font-weight: 650;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: none;
   color: var(--docs-muted);
+}
+
+.dumi-default-sidebar > dl + dl {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--docs-border-2);
 }
 
 .dumi-default-sidebar > dl > dd {
@@ -378,37 +571,34 @@ body {
 }
 
 .dumi-default-sidebar > dl > dd > a {
-  padding: 8px 10px 8px 12px;
-  border-radius: var(--docs-radius-sm);
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--docs-text-2);
 }
 
 .dumi-default-sidebar > dl > dd > a:hover {
-  background: var(--docs-surface-2);
+  background: color-mix(in srgb, var(--docs-surface-2) 70%, transparent);
+  color: var(--docs-text);
 }
 
 .dumi-default-sidebar > dl > dd > a.active {
   position: relative;
   background: transparent;
   color: var(--docs-primary);
-}
-
-.dumi-default-sidebar > dl > dd > a.active::before {
-  content: '';
-  position: absolute;
-  left: 6px;
-  top: 50%;
-  width: 3px;
-  height: 18px;
-  transform: translateY(-50%);
-  border-radius: 2px;
-  background: var(--docs-primary);
+  font-weight: 650;
+  box-shadow: inset 2px 0 0 var(--docs-primary);
 }
 
 /* Markdown typography */
 .markdown {
   color: var(--docs-text);
-  font-size: 15px;
-  line-height: 1.85;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.dumi-default-content > article {
+  animation: farm-docs-fade-in 0.35s ease-out;
 }
 
 .markdown p {
@@ -417,6 +607,11 @@ body {
 
 .markdown a {
   color: var(--docs-primary);
+  text-decoration: none;
+}
+
+.markdown a:hover {
+  text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -524,7 +719,7 @@ body {
   background-color: rgba(0, 0, 0, 0.78);
 }
 
-html[data-prefers-color='dark'] .dumi-theme-default-tooltip-content {
+html[data-theme='dark'] .dumi-theme-default-tooltip-content {
   background-color: rgba(15, 23, 42, 0.92);
 }
 
@@ -563,6 +758,10 @@ html[data-prefers-color='dark'] .dumi-theme-default-tooltip-content {
 }
 
 /* TOC */
+.dumi-default-doc-layout-toc-wrapper {
+  width: 240px;
+}
+
 .dumi-default-doc-layout-toc-wrapper > h4 {
   /* 默认是英文 TABLE OF CONTENTS；arco 风格更倾向于“弱标题”，这里直接隐藏 */
   display: none;
@@ -574,11 +773,11 @@ html[data-prefers-color='dark'] .dumi-theme-default-tooltip-content {
   margin: 0 0 10px;
   color: var(--docs-muted);
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
 }
 
 .dumi-default-toc {
-  border-inline-start-color: var(--docs-border);
+  border-inline-start-color: var(--docs-border-2);
 }
 
 .dumi-default-toc > li {
@@ -586,23 +785,30 @@ html[data-prefers-color='dark'] .dumi-theme-default-tooltip-content {
 }
 
 .dumi-default-toc > li > a {
-  border-radius: var(--docs-radius-sm);
-  padding: 6px 10px;
+  margin: 4px 0;
+  padding: 6px 12px;
+  border-radius: 10px;
+  color: var(--docs-text-2);
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .dumi-default-toc > li[data-depth='3'] > a {
-  padding-inline-start: 18px;
+  padding-inline-start: 22px;
   font-size: 12px;
   color: var(--docs-text-2);
 }
 
 .dumi-default-toc > li > a:hover {
-  background: var(--docs-surface-2);
+  background: color-mix(in srgb, var(--docs-surface-2) 70%, transparent);
+  color: var(--docs-text);
 }
 
 .dumi-default-toc > li > a.active {
-  border-inline-start-color: var(--docs-primary);
-  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+  margin-inline-start: 0;
+  background: transparent;
+  color: var(--docs-primary);
+  font-weight: 650;
+  box-shadow: inset 2px 0 0 var(--docs-primary);
 }
 
 /* Tabs（代码/内容分组） */

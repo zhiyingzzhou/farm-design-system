@@ -1,6 +1,12 @@
 ---
 title: 主题
 order: 1
+nav:
+  title: 主题
+  order: 3
+group:
+  title: 使用
+  order: 1
 toc: content
 ---
 
@@ -34,7 +40,7 @@ toc: content
 
 ## 推荐用法（应用侧组合）
 
-主题包不再提供 Provider（避免强绑定 React/运行时副作用），推荐在应用里自行组合：
+主题包主入口保持无副作用（避免默认强绑定 React/运行时逻辑），推荐在应用里自行组合：
 
 ```tsx
 import React from 'react';
@@ -68,6 +74,77 @@ export default function App() {
 
 - `farmAntdTheme[mode]` 只提供 token 覆写；`algorithm` 由应用决定
 - `createTokensCss()` 只生成 CSS 变量定义，不会引入任何组件样式
+
+## 推荐：使用 FarmProvider（React 入口）
+
+`FarmProvider` 由主题包提供（`@farm-design-system/theme/react`），用于把：
+
+- antd `ConfigProvider` 的主题注入
+- Farm Token 的 CSS 变量注入
+- `data-theme`（light/dark）切换
+
+统一封装在一起。`@farm-design-system/ui` 只负责组件实现与导出。
+
+它默认会使用 `@farm-design-system/theme` 的内置配置：
+
+- 自动注入 `tokensCss`（两套 light/dark 选择器都会生成）
+- 自动注入 `antdTheme[mode]`，并按 mode 选择 antd algorithm
+
+因此最简单用法只需要传入 `mode`：
+
+```tsx | pure
+import React from 'react';
+import { FarmProvider } from '@farm-design-system/theme/react';
+import { Button } from '@farm-design-system/ui';
+
+export default function App() {
+  const mode: 'light' | 'dark' = 'light';
+
+  return (
+    <FarmProvider mode={mode}>
+      <Button type="primary">Hello</Button>
+    </FarmProvider>
+  );
+}
+```
+
+多项目换肤（覆写 Farm Token）时，把生成结果透传给 `FarmProvider`：
+
+```tsx | pure
+import React from 'react';
+import { createTheme, createTokensCss } from '@farm-design-system/theme';
+import { FarmProvider } from '@farm-design-system/theme/react';
+import { Button } from '@farm-design-system/ui';
+
+export default function App() {
+  const mode: 'light' | 'dark' = 'light';
+
+  const theme = createTheme({
+    overrides: {
+      light: {
+        'brand-color-brand-2': '#00b96b'
+      }
+    }
+  });
+
+  return (
+    <FarmProvider mode={mode} tokensCss={createTokensCss({ vars: theme.cssVars })} antdTheme={theme.antdTheme[mode]}>
+      <Button type="primary">Hello</Button>
+    </FarmProvider>
+  );
+}
+```
+
+不需要主题时，不要使用 `FarmProvider` 包裹即可：
+
+```tsx
+import React from 'react';
+import { Button } from '@farm-design-system/ui';
+
+export default function Demo() {
+  return <Button type="primary">No theme</Button>;
+}
+```
 
 ## 多项目换肤（覆写 Farm Token）
 
@@ -155,4 +232,4 @@ module.exports = {
 3. 执行 `pnpm --filter @farm-design-system/theme check:antd:coverage`
 4. 如需调整映射规则，只改 `packages/theme/scripts/sync-src-assets.ts`
 
-更完整的维护手册见：[`packages/theme/MAINTENANCE.md`](/theme-maintenance)。
+更完整的维护手册见：[`packages/theme/MAINTENANCE.md`](/theme/maintenance)。
